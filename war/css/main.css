@@ -1,0 +1,212 @@
+#container
+{
+	margin: 0 auto;
+	width: 100%;
+	background: #fff;
+}
+.post
+{
+	
+	padding-left:10px;
+	padding-bottom:20px;
+	padding-top:20px;
+	border-bottom-style:solid;
+	
+	border-width:2px;
+	border-top-color:#eee;
+	border-bottom-color:#eee;
+	border-left-style:solid;
+	border-left-color:#eee;
+}
+#postHeading
+{
+	font-size:2.2em;
+	text-decoration: none;
+	color:black;
+	font-weight:lighter;
+	font-family:Arial,Helvetica,sans-serif;
+}
+#postDate{
+	font-size:1em;
+	font-style: italic;
+	color:black;
+	font-weight:lighter;
+	font-family:Arial,Helvetica,sans-serif;
+	padding-bottom:10px;
+}
+#postHeading:hover{
+	color:white;
+	background:black;
+}
+#postContent{
+	
+	font-size:1em;
+	color:black;
+	font-weight:lighter;
+	font-family:Arial,Helvetica,sans-serif;
+}
+#postImage{
+	max-width:650px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.postImg
+{
+	
+	width: 100%;
+	
+}
+#header
+{
+	background:#313131;
+	overflow: hidden;
+	white-space: nowrap;
+	padding: 20px;
+}
+
+#header h1 { margin: 0; }
+.kwicks {
+	/* recommended styles for kwicks ul container */
+	list-style: none;
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+.kwicks li{
+	/* these are required, but the values are up to you (must be pixel) */
+	width: 125px;
+	height: 100px;
+
+	/*do not change these */
+	display: block;
+	overflow: hidden;
+	padding: 0;  /* if you need padding, do so with an inner div (or implement your own box-model hack) */
+}
+.kwicks.horizontal li {
+	/* This is optional and will be disregarded by the script.  However, it should be provided for non-JS enabled browsers. */
+	margin-right: 5px; /*Set to same as spacing option. */	
+	float: left;
+}
+.kwicks.vertical  li{
+	/* This is optional and will be disregarded by the script.  However, it should be provided for non-JS enabled browsers. */
+	margin-bottom: 5px; /*Set to same as spacing option. */	
+}
+
+.kwicks li{  
+    float: left;  
+    width: 125px;  
+    height: 100px;  
+    margin-right: 5px;  
+}
+  
+#kwick1 {   
+	cursor:pointer;
+    background-color: #53b388;  
+    background-image: url('images/meet.gif');  
+}  
+#kwick2 {  
+	cursor:pointer;
+    background-color: #5a69a9;  
+    background-image: url('images/kwicks.gif');  
+}  
+#kwick3 {  
+	cursor:pointer;
+    background-color: #c26468;  
+    background-image: url('images/for.gif');  
+}  
+#kwick4 {   
+	cursor:pointer;
+    background-color: #FFFF00;  
+    background-image: url('images/jquery.gif');  
+    margin-right: none;  
+}  
+#kwick5 {   
+	cursor:pointer;
+    background-color: #FF00CC;  
+    background-image: url('images/jquery.gif');  
+    margin-right: none;  
+}  
+#kwick6 {   
+	cursor:pointer;
+    background-color: #bf7cc7;  
+    background-image: url('images/jquery.gif');  
+    margin-right: none;  
+}  
+.kwicks.horizontal #kwick_4 {
+	margin-right: none; /* cancel margin on last kiwck (if you set a margin above) */
+}
+.kwicks.vertical #kwick_4 {
+	margin-bottom: none; /* cancel margin on last kiwck (if you set a margin above) */
+}
+#content-container1
+{
+	float: left;
+	width: 100%;
+	background: #fff url(/wp-content/uploads/layout-three-liquid-background1.gif) repeat-y 20% 0;
+}
+
+#content-container2
+{
+	float: left;
+	width: 100%;
+	background: url(/wp-content/uploads/layout-three-liquid-background2.gif) repeat-y 80% 0;
+}
+
+#section-navigation
+{
+	float: left;
+	width: 19%;
+	padding: 20px 0;
+	margin: 0 2%;
+	display: inline;
+	font-size:1.4em;
+	text-decoration: none;
+	color:black;
+	font-family:Arial,Helvetica,sans-serif;
+}
+
+#section-navigation ul
+{
+	margin: 0;
+	padding: 0;
+}
+
+#section-navigation ul li
+{
+	margin: 0 0 1em;
+	padding: 0;
+	list-style-type: none;
+}
+
+#content
+{
+	float: left;
+	width: 70%;
+	padding: 20px 0;
+	margin: 0 0 0 2%;
+	
+	
+}
+
+#content h2 { margin: 0; }
+
+#aside
+{
+	float: right;
+	width: 10%;
+	padding: 20px 0;
+	margin: 0 2% 0 0;
+	display: inline;
+	
+}
+
+#aside h3 { margin: 0; }
+
+#footer
+{
+	clear: both;
+	background: #ccc;
+	text-align: right;
+	padding: 20px;
+	height: 1%;
+}
