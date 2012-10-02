@@ -9,7 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import appspot.helper.Util;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
 
 import dataManagers.UserDM;
 import entity.Users;
@@ -18,25 +24,35 @@ public class authenticationServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("text/html");
+		StringBuilder sb = Util.parseJSON(request);
 
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
-
-		Users users = UserDM.retrieve(email);
+		Gson gson = new GsonBuilder().create();
+		Users temp = gson.fromJson(sb.toString(), Users.class);
+		Users users = UserDM.retrieve(temp.getEmail().toLowerCase());
 		HttpSession session = request.getSession(true);
 		RequestDispatcher dispatcher;
 
 		if (users != null) {
-			if (password.equals(users.getPassword())) {
+			if (temp.getPassword().equals(users.getPassword())) {
 				session.setAttribute("user", users);
 				// Send back Users object back to the client
+				response.setStatus(HttpServletResponse.SC_OK);
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().write(new Gson().toJson(users));
 			}
 		} else {
-			String errorMsg = "";
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			
+			String errorMsg = "Invalid username or password";
+			Gson responseGson = new Gson();
+			JsonObject obj = new JsonObject();
+			obj.addProperty("error", errorMsg);
+			
+			response.getWriter().write(responseGson.toJson(obj));
+			
 			/*
 			 * if(username.equals("")&&password.equals("")){
 			 * errorMsg="Please enter your username and password"; }else
@@ -44,11 +60,10 @@ public class authenticationServlet extends HttpServlet {
 			 * else if(password.equals("")){
 			 * errorMsg="Please enter your password"; }else{
 			 */
-			errorMsg = "Invalid username or password";
-			// }
-			request.setAttribute("errorMsg", errorMsg);
-			dispatcher = request.getRequestDispatcher("index.jsp");
-			dispatcher.forward(request, response);
+//			// }
+//			request.setAttribute("errorMsg", errorMsg);
+//			dispatcher = request.getRequestDispatcher("index.jsp");
+//			dispatcher.forward(request, response);
 		}
 
 	}
