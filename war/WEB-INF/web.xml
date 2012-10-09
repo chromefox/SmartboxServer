@@ -46,9 +46,54 @@
         <servlet-name>points</servlet-name>
         <url-pattern>/addPoints.do</url-pattern>
     </servlet-mapping>
+    
     <welcome-file-list>
         <welcome-file>home.jsp</welcome-file>
     </welcome-file-list>
+    
+    <servlet>
+        <servlet-name>registerDevice</servlet-name>
+        <servlet-class>servlets.RegisterDeviceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>registerDevice</servlet-name>
+        <url-pattern>/registerDevice</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>unregisterDevice</servlet-name>
+        <servlet-class>servlets.UnregisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>unregisterDevice</servlet-name>
+        <url-pattern>/unregisterDevice</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+    <servlet-name>sendAllMessagesServlet</servlet-name>
+    <servlet-class>
+      servlets.SendAllMessagesServlet
+    </servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>sendAllMessagesServlet</servlet-name>
+    <url-pattern>/sendAll</url-pattern>
+  </servlet-mapping>
+  
+   <servlet>
+    <servlet-name>sendMessageServlet</servlet-name>
+    <servlet-class>
+      servlets.SendMessageServlet
+    </servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>sendMessageServlet</servlet-name>
+    <url-pattern>/send</url-pattern>
+  </servlet-mapping>
+    
  <servlet>
   <servlet-name>SystemServiceServlet</servlet-name>
   <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>

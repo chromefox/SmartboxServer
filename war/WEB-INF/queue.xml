@@ -1,0 +1,10 @@
+<queue-entries>
+<total-storage-limit>50M</total-storage-limit>
+<!--Set the number of max concurrent requests to 10-->
+  <queue>
+    <name>gcm</name>
+    <rate>1000/s</rate>
+    <bucket-size>40</bucket-size>
+    <max-concurrent-requests>10</max-concurrent-requests>
+  </queue>
+</queue-entries>

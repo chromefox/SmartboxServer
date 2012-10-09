@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -21,9 +23,11 @@ import dataManagers.UserDM;
 import entity.Users;
 
 public class authenticationServlet extends HttpServlet {
+	 protected final Logger logger = Logger.getLogger(getClass().getName());
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		StringBuilder sb = Util.parseJSON(request);
 
 		Gson gson = new GsonBuilder().create();
@@ -34,7 +38,6 @@ public class authenticationServlet extends HttpServlet {
 
 		if (users != null) {
 			if (temp.getPassword().equals(users.getPassword())) {
-				session.setAttribute("user", users);
 				// Send back Users object back to the client
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.setContentType("application/json");

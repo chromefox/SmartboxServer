@@ -9,16 +9,23 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.datanucleus.api.jpa.annotations.Extension;
+
 import com.google.appengine.api.datastore.Text;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Users implements Serializable {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Long id;
-
+	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
+	private String encodedKey;
+	@Persistent
+	@Extension(vendorName = "datanucleus", key = "gae.pk-id", value = "true")
+	private Long keyId;
 	@Persistent
 	private String username;
+	@Persistent
+	private String deviceRegId;
 	@Persistent
 	private String password;
 	@Persistent
@@ -37,6 +44,7 @@ public class Users implements Serializable {
 	private String mobileNumber;
 	@Persistent
 	private Text artistInfo;
+	
 	@Persistent(mappedBy = "users")
 	private List<Group> groupSet;
 
@@ -71,8 +79,24 @@ public class Users implements Serializable {
 		this.email = email;
 	}
 
+	public String getEncodedKey() {
+		return encodedKey;
+	}
+
+	public void setEncodedKey(String encodedKey) {
+		this.encodedKey = encodedKey;
+	}
+
 	public String getEmail() {
 		return email;
+	}
+
+	public String getDeviceRegId() {
+		return deviceRegId;
+	}
+
+	public void setDeviceRegId(String deviceRegId) {
+		this.deviceRegId = deviceRegId;
 	}
 
 	public void setMobileNumber(String mobileNumber) {

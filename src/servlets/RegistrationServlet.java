@@ -28,7 +28,6 @@ public class RegistrationServlet extends HttpServlet {
 			Users users = gson.fromJson(sb.toString(), Users.class);
 			UserDM.createUser(users);
 			
-			
 			HttpSession session = request.getSession(true);
 			RequestDispatcher dispatcher;
 
@@ -45,6 +44,5 @@ public class RegistrationServlet extends HttpServlet {
 		 * dispatcher = request.getRequestDispatcher("index.jsp");
 		 * dispatcher.forward(request, response);
 		 */
-
 	}
 }

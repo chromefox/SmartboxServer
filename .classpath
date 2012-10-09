@@ -8,5 +8,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/SmartBoxSMUServer/Libs/google-gson-2.2.2/gson-2.2.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="Libs/gcm-server.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

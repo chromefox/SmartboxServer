@@ -3,19 +3,22 @@ package entity;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import com.google.appengine.api.datastore.Text;
-
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Group implements Serializable {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Long id;
+	@Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
+    private String encodedKey;
+	 @Persistent
+	    @Extension(vendorName="datanucleus", key="gae.pk-id", value="true")
+	    private Long keyId;
 	@Persistent
 	private String groupName;
 	@Persistent
@@ -52,12 +55,12 @@ public class Group implements Serializable {
 		this.users = users;
 	}
 
-	public Long getId() {
-		return id;
+	public String getEncodedKey() {
+		return encodedKey;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setEncodedKey(String encodedKey) {
+		this.encodedKey = encodedKey;
 	}
 
 	public String getGroupName() {
