@@ -93,6 +93,18 @@
     <servlet-name>sendMessageServlet</servlet-name>
     <url-pattern>/send</url-pattern>
   </servlet-mapping>
+  
+     <servlet>
+    <servlet-name>contactCheckServlet</servlet-name>
+    <servlet-class>
+      servlets.ContactCheckServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>contactCheckServlet</servlet-name>
+    <url-pattern>/contactCheck</url-pattern>
+  </servlet-mapping>
     
  <servlet>
   <servlet-name>SystemServiceServlet</servlet-name>

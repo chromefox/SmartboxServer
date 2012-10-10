@@ -1,12 +1,9 @@
 package servlets;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -15,15 +12,12 @@ import appspot.helper.Util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
 
 import dataManagers.UserDM;
 import entity.Users;
 
-public class authenticationServlet extends HttpServlet {
-	 protected final Logger logger = Logger.getLogger(getClass().getName());
+public class authenticationServlet extends BaseServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

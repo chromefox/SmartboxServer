@@ -41,9 +41,7 @@ import com.google.android.gcm.server.Sender;
  * This servlet is invoked by AppEngine's Push Queue mechanism.
  */
 @SuppressWarnings("serial")
-public class SendMessageServlet extends HttpServlet {
-  protected final Logger logger = Logger.getLogger(getClass().getName());
-  
+public class SendMessageServlet extends BaseServlet {
   private static final String GCM_API_KEY = "AIzaSyAgKHJHU-T39HRQXfhCJNgpMSxe9a5fTNI";
   private static final String HEADER_QUEUE_COUNT = "X-AppEngine-TaskRetryCount";
   private static final String HEADER_QUEUE_NAME = "X-AppEngine-QueueName";
@@ -128,6 +126,7 @@ public class SendMessageServlet extends HttpServlet {
   private void sendSingleMessage(String regId, HttpServletResponse resp) {
     logger.info("Sending message to device " + regId);
     Message message = new Message.Builder().build();
+    //TODO: Message is the chat message that the user posted from the device - sent to all of the group's users than the user.
     Result result;
     try {
       result = sender.sendNoRetry(message, regId);

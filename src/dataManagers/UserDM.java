@@ -35,7 +35,7 @@ public enum UserDM {
 		}
 	}
 
-	public static Users[] retrieveAll() {
+	public static List<Users> retrieveAll() {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		List<Users> result = null;
 		Query query = pm.newQuery(Users.class);
@@ -49,7 +49,7 @@ public enum UserDM {
 			query.closeAll();
 			pm.close();
 		}
-		return result.toArray(new Users[result.size()]);
+		return result;
 	}
 
 	public static Users retrieve(String email) {

@@ -5,7 +5,7 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-public class userMusicServlet extends HttpServlet {
+public class userMusicServlet extends BaseServlet {
     @Override
     public void doPost(HttpServletRequest request,
                         HttpServletResponse response) throws ServletException, IOException {

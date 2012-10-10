@@ -5,7 +5,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.*;
 
-public class logoutServlet extends HttpServlet {
+public class logoutServlet extends BaseServlet {
     @Override
   public void doGet(HttpServletRequest request,
                     HttpServletResponse response)

@@ -17,7 +17,7 @@ import com.google.gson.GsonBuilder;
 import dataManagers.UserDM;
 import entity.Users;
 
-public class RegistrationServlet extends HttpServlet {
+public class RegistrationServlet extends BaseServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

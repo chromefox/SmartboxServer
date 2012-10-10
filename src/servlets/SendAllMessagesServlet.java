@@ -47,8 +47,7 @@ import entity.Users;
  * This servlet is used just by the browser (i.e., not device).
  */
 @SuppressWarnings("serial")
-public class SendAllMessagesServlet extends HttpServlet {
-	protected final Logger logger = Logger.getLogger(getClass().getName());
+public class SendAllMessagesServlet extends BaseServlet {
 	private final int MULTICAST_SIZE = 1000;
   /**
    * Processes the request to add a new message.

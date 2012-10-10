@@ -41,7 +41,7 @@ import entity.Users;
  * error or {@code unregistered} extra.
  */
 @SuppressWarnings("serial")
-public class RegisterDeviceServlet extends HttpServlet {
+public class RegisterDeviceServlet extends BaseServlet {
 
   private static final String PARAMETER_REG_ID = "regId";
 

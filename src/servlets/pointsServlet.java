@@ -6,7 +6,7 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-public class pointsServlet extends HttpServlet {
+public class pointsServlet extends BaseServlet {
     @Override
     public void doPost(HttpServletRequest request,
                         HttpServletResponse response) throws ServletException, IOException {
