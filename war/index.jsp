@@ -31,7 +31,7 @@ $("a[rel='facebox']", this).trigger("click");
 <div id="fb-root"></div>
 	<div align="center" style="padding-top:15%">
 		<div  class="div_wrapper">
-			<form action="logIn.do" name="form1" method="POST">
+			<form action="testing" name="form1" method="POST">
 				<table>
 					<tr>
 						<td style="font-size:30px">Username:</td><td>

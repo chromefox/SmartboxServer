@@ -29,6 +29,14 @@
         <url-pattern>/logOut.do</url-pattern>
     </servlet-mapping>
     
+    <servlet>
+        <servlet-name>testing</servlet-name>
+        <servlet-class>servlets.pointsServlet</servlet-class>
+    </servlet>
+        <servlet-mapping>
+        <servlet-name>testing</servlet-name>
+        <url-pattern>/testing</url-pattern>
+    </servlet-mapping>
     
     <servlet>
         <servlet-name>userMusic</servlet-name>
@@ -105,6 +113,31 @@
     <servlet-name>contactCheckServlet</servlet-name>
     <url-pattern>/contactCheck</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+   <servlet-name>addGroupServlet</servlet-name>
+    <servlet-class>
+      servlets.addGroupServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>addGroupServlet</servlet-name>
+    <url-pattern>/addGroup</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+   <servlet-name>getGroupServlet</servlet-name>
+    <servlet-class>
+      servlets.getGroupServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>getGroupServlet</servlet-name>
+    <url-pattern>/getGroup</url-pattern>
+  </servlet-mapping>
+    
     
  <servlet>
   <servlet-name>SystemServiceServlet</servlet-name>

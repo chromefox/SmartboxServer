@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import appspot.helper.Util;
+
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
@@ -21,12 +23,14 @@ public enum UserDM {
 	protected final static Logger logger = Logger.getLogger("abc");
 
 	public static void createUser(Users user) {
-
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try {
+			// Key key = KeyFactory.createKey(Users.class.getSimpleName(),
+			// user.getEmail());
+			// user.setEncodedKey(KeyFactory.keyToString(key));
 			Key key = KeyFactory.createKey(Users.class.getSimpleName(),
-					user.getEmail());
-			user.setEncodedKey(KeyFactory.keyToString(key));
+					user.getEmail().toLowerCase());
+			user.setKey(key);
 			pm.makePersistent(user);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.toString());
@@ -40,7 +44,6 @@ public enum UserDM {
 		List<Users> result = null;
 		Query query = pm.newQuery(Users.class);
 		try {
-
 			result = (List<Users>) query.execute();
 			result.size();
 		} catch (Exception e) {
@@ -63,12 +66,75 @@ public enum UserDM {
 			if (results.iterator().hasNext()) {
 				for (Users e : results) {
 					user = e;
+					user.setEncodedKey();
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			query.closeAll();
+			pm.close();
+		}
+		return user;
+	}
+	
+	public static Users retrieveFromMobile(String rawNumber) {
+		String mobileNumber = Util.parseMobileNumber(rawNumber);
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Users user = null;
+		Query query = pm.newQuery(Users.class);
+		query.setFilter("mobileNumber == mobileNumberParam");
+		query.declareParameters("String mobileNumberParam");
+		try {
+			List<Users> results = (List<Users>) query.execute(mobileNumber);
+			if (results.iterator().hasNext()) {
+				for (Users e : results) {
+					user = e;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			query.closeAll();
+			pm.close();
+		}
+		return user;
+	}
+	
+	public static void persist(Users user) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		try {
+			pm.makePersistent(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pm.close();
+		}
+	}
+
+	public static Users retrieveUser(String email) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Users user = null;
+		try {
+			user = (Users) pm.getObjectById(Users.class, email);
+			user.getGroupSet();	
+			user.setEncodedKey();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pm.close();
+		}
+		return user;
+	}
+	
+	public static Users retrieveUserWithKey(Key key) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Users user = null;
+		try {
+			user = (Users) pm.getObjectById(Users.class, key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 			pm.close();
 		}
 		return user;
@@ -137,7 +203,7 @@ public enum UserDM {
 		query.setFilter("encodedKey == encodedKeyParam");
 		query.declareParameters("String encodedKeyParam");
 		try {
-			list = (List<Users>) query.execute(user.getEncodedKey());
+			list = (List<Users>) query.execute(user.getKey());
 			if (list.iterator().hasNext()) {
 				for (Users e : list) {
 					e.setDeviceRegId("");

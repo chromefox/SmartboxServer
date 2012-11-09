@@ -1,36 +1,85 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.gson.annotations.Expose;
+
+import dataManagers.UserDM;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Group implements Serializable {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	@Extension(vendorName="datanucleus", key="gae.encoded-pk", value="true")
-    private String encodedKey;
-	 @Persistent
-	    @Extension(vendorName="datanucleus", key="gae.pk-id", value="true")
-	    private Long keyId;
+	private Key key;
 	@Persistent
+	@Expose
 	private String groupName;
 	@Persistent
+	@Expose
 	private String className;
 	@Persistent
+	@Expose
 	private int sectionNumber;
-
 	@Persistent
-	private Users users;
-
+	@Expose
+	private String userEmail;
+	@NotPersistent
+	@Expose
+	private ArrayList<Contact> contacts;
+	@Persistent
+	private Set<Key> userSet = new HashSet<Key>();
+	@Expose
+	private String encodedKey;
 	@Persistent(mappedBy = "group")
-	private List<GroupMember> groupMemberSet;
+	private List<Message> messages = new ArrayList<Message>();
+	@NotPersistent
+	@Expose
+	private ArrayList<String> memberNames = new ArrayList<String>();
+
+	public void setEncodedKey() {
+		encodedKey = KeyFactory.keyToString(key);
+	}
+	
+	public void setMemberName() {
+		//iterate through userset
+	}
+	
+	public void addMessage(Message message) {
+		messages.add(message);
+	}
+
+	public ArrayList<String> getMemberNames() {
+		return memberNames;
+	}
+
+	public void setMemberNames(ArrayList<String> memberNames) {
+		this.memberNames = memberNames;
+	}
+
+	public List<Message> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(List<Message> messages) {
+		this.messages = messages;
+	}
+
+	public Group() {
+		
+	}
 
 	public Group(String groupName, String className, int sectionNumber) {
 		super();
@@ -39,28 +88,54 @@ public class Group implements Serializable {
 		this.sectionNumber = sectionNumber;
 	}
 
-	public Users getUsers() {
-		return users;
+	public void addUser(Users user) {
+		if (userSet == null)
+			userSet = new HashSet<Key>();
+		if (user.getGroupSet() == null)
+			user.setGroupSet(new HashSet<Key>());
+		userSet.add(user.getKey());
+		user.getGroupSet().add(getKey());
+		// Persist changes in key in User
+		UserDM.persist(user);
 	}
 
-	public List<GroupMember> getGroupMemberSet() {
-		return groupMemberSet;
+	public void removeUser(Users user) {
+		userSet.remove(user.getKey());
+		user.getGroupSet().remove(getKey());
+		// Persist changes in key in User
+		UserDM.persist(user);
 	}
 
-	public void setGroupMemberSet(List<GroupMember> groupMemberSet) {
-		this.groupMemberSet = groupMemberSet;
+	public Set<Key> getUserSet() {
+		return userSet;
 	}
 
-	public void setUsers(Users users) {
-		this.users = users;
+	public void setUserSet(Set<Key> userSet) {
+		this.userSet = userSet;
 	}
 
-	public String getEncodedKey() {
-		return encodedKey;
+	public String getUserEmail() {
+		return userEmail;
 	}
 
-	public void setEncodedKey(String encodedKey) {
-		this.encodedKey = encodedKey;
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public ArrayList<Contact> getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(ArrayList<Contact> contacts) {
+		this.contacts = contacts;
+	}
+
+	public Key getKey() {
+		return key;
+	}
+
+	public void setKey(Key key) {
+		this.key = key;
 	}
 
 	public String getGroupName() {

@@ -1,52 +1,82 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.datanucleus.api.jpa.annotations.Extension;
-
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Text;
+import com.google.gson.annotations.Expose;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Users implements Serializable {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	@Extension(vendorName = "datanucleus", key = "gae.encoded-pk", value = "true")
-	private String encodedKey;
+	private Key key;
 	@Persistent
-	@Extension(vendorName = "datanucleus", key = "gae.pk-id", value = "true")
-	private Long keyId;
-	@Persistent
+	@Expose
 	private String username;
 	@Persistent
+	@Expose
 	private String deviceRegId;
 	@Persistent
+	@Expose
 	private String password;
 	@Persistent
+	@Expose
 	private int priv;
 	@Persistent
+	@Expose
 	private String name;
 	@Persistent
+	@Expose
 	private String dob;
 	@Persistent
+	@Expose
 	private String access_token;
 	@Persistent
+	@Expose
 	private String uid;
 	@Persistent
+	@Expose
 	private String email;
 	@Persistent
+	@Expose
 	private String mobileNumber;
 	@Persistent
+	@Expose
 	private Text artistInfo;
+	@Persistent
+	private Set<Key> groupSet = new HashSet<Key>();
+	@Expose
+	private ArrayList<Group> groupList;
+	@Expose
+	private String encodedKey;
 	
-	@Persistent(mappedBy = "users")
-	private List<Group> groupSet;
+	public String getEncodedKey() {
+		return encodedKey;
+	}
+	
+	public void setEncodedKey() {
+		encodedKey = KeyFactory.keyToString(key);
+	}
+	
+	public ArrayList<Group> getGroupList() {
+		return groupList;
+	}
+
+	public void setGroupList(ArrayList<Group> groupList) {
+		this.groupList = groupList;
+	}
 
 	public Users(String username, String password, String name, String dob,
 			int priv, String access_token, String uid) {
@@ -60,6 +90,44 @@ public class Users implements Serializable {
 		this.artistInfo = null;
 	}
 
+	public void addGroup(Group group) {
+		groupSet.add(group.getKey());
+		group.getUserSet().add(getKey());
+	}
+
+	public void removeGroup(Group group) {
+		groupSet.remove(group.getKey());
+		group.getUserSet().remove(getKey());
+	}
+
+	// public String getKeyName() {
+	// return keyName;
+	// }
+	//
+	// public void setKeyName(String keyName) {
+	// this.keyName = keyName;
+	// }
+
+	// public String getEncodedKey() {
+	// return encodedKey;
+	// }
+	//
+	// public void setEncodedKey(String encodedKey) {
+	// this.encodedKey = encodedKey;
+	// }
+
+	public Key getKey() {
+		return key;
+	}
+
+	public void setKey(Key key) {
+		this.key = key;
+	}
+
+	public Users() {
+		groupList = new ArrayList<Group>();
+	}
+
 	public Users(String name, String password, String email, String mobileNumber) {
 		this.name = name;
 		this.password = password;
@@ -67,24 +135,16 @@ public class Users implements Serializable {
 		this.mobileNumber = mobileNumber;
 	}
 
-	public List<Group> getGroupSet() {
+	public Set<Key> getGroupSet() {
 		return groupSet;
 	}
 
-	public void setGroupSet(List<Group> groupSet) {
+	public void setGroupSet(Set<Key> groupSet) {
 		this.groupSet = groupSet;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getEncodedKey() {
-		return encodedKey;
-	}
-
-	public void setEncodedKey(String encodedKey) {
-		this.encodedKey = encodedKey;
 	}
 
 	public String getEmail() {
@@ -133,7 +193,6 @@ public class Users implements Serializable {
 
 	public void setAccessToken(String access_token) {
 		this.access_token = access_token;
-		;
 	}
 
 	public String getAccessToken() {

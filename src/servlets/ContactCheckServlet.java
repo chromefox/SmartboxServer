@@ -44,18 +44,8 @@ public class ContactCheckServlet extends BaseServlet {
 			for (Contact contact : deviceContactList) {
 				//loop through user to check existence
 				for(Users user : users) {
-					String userMobile = user.getMobileNumber().replaceAll("\\s","");
-					String contactMobile = contact.getMobileNumber().replaceAll("\\s","");
-					
-					//Basic transformation
-					if(userMobile.length() > 8) {
-						userMobile = userMobile.substring(3);
-					}
-					
-					if(contactMobile.length() > 8) {
-						contactMobile = contactMobile.substring(3);
-					}
-					
+					String userMobile = Util.parseMobileNumber(user.getMobileNumber());
+					String contactMobile = Util.parseMobileNumber(contact.getMobileNumber());
 					if(userMobile.equals(contactMobile)) {
 						availableContactList.add(contact);
 						break;
