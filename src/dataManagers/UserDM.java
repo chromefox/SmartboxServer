@@ -12,6 +12,9 @@ import appspot.helper.Util;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
+import entity.ChatMessage;
+import entity.Group;
+import entity.UserEvent;
 import entity.Users;
 
 public enum UserDM {
@@ -34,6 +37,20 @@ public enum UserDM {
 			pm.makePersistent(user);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.toString());
+		} finally {
+			pm.close();
+		}
+	}
+	
+	public static void addUserEvent(Users users, List<UserEvent> events) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		try {
+			for(UserEvent ue : events) {
+				users.addUserEvents(ue);
+			}
+			pm.makePersistent(users);
+		} catch (Exception e) {
+			logger.severe(e.toString());
 		} finally {
 			pm.close();
 		}

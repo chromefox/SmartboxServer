@@ -43,6 +43,7 @@ public class addGroupServlet extends BaseServlet {
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.toString());
+			logger.log(Level.SEVERE, e.getStackTrace().toString());
 			response.setHeader("Cache-Control", "no-cache");
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}

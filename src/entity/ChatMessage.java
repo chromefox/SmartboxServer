@@ -17,7 +17,7 @@ import com.google.appengine.api.datastore.Text;
 import com.google.gson.annotations.Expose;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class Message implements Serializable {
+public class ChatMessage implements Serializable {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
@@ -26,11 +26,12 @@ public class Message implements Serializable {
     private Group group;
 	
 	@Persistent
+	@Expose
 	private String message;
 	
-	public Message() { }
+	public ChatMessage() { }
 	
-	public Message(String message) {
+	public ChatMessage(String message) {
 		this.message = message;
 	}
 	

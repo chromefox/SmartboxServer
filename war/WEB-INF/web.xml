@@ -67,6 +67,16 @@
         <servlet-name>registerDevice</servlet-name>
         <url-pattern>/registerDevice</url-pattern>
     </servlet-mapping>
+    
+      <servlet>
+        <servlet-name>eventSync</servlet-name>
+        <servlet-class>servlets.EventSyncServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>eventSync</servlet-name>
+        <url-pattern>/sendEvent</url-pattern>
+    </servlet-mapping>
+    
     <servlet>
         <servlet-name>unregisterDevice</servlet-name>
         <servlet-class>servlets.UnregisterServlet</servlet-class>
@@ -102,7 +112,7 @@
     <url-pattern>/send</url-pattern>
   </servlet-mapping>
   
-     <servlet>
+  <servlet>
     <servlet-name>contactCheckServlet</servlet-name>
     <servlet-class>
       servlets.ContactCheckServlet
@@ -112,6 +122,19 @@
   <servlet-mapping>
     <servlet-name>contactCheckServlet</servlet-name>
     <url-pattern>/contactCheck</url-pattern>
+  </servlet-mapping>
+  
+  
+  <servlet>
+    <servlet-name>FindSlotServlet</servlet-name>
+    <servlet-class>
+      servlets.FindSlotServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>FindSlotServlet</servlet-name>
+    <url-pattern>/findSlot</url-pattern>
   </servlet-mapping>
   
   <servlet>

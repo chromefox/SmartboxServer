@@ -3,8 +3,10 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.jdo.PersistenceManager;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.NotPersistent;
@@ -16,6 +18,8 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Text;
 import com.google.gson.annotations.Expose;
+
+import dataManagers.PMF;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Users implements Serializable {
@@ -61,7 +65,22 @@ public class Users implements Serializable {
 	private ArrayList<Group> groupList;
 	@Expose
 	private String encodedKey;
+	@Persistent(mappedBy = "users")
+	@Expose
+	private List<UserEvent> userEvents = new ArrayList<UserEvent>();
 	
+	public List<UserEvent> getUserEvents() {
+		return userEvents;
+	}
+
+	public void setUserEvents(List<UserEvent> userEvents) {
+		this.userEvents = userEvents;
+	}
+	
+	public void addUserEvents(UserEvent event) {
+		userEvents.add(event);
+	}
+
 	public String getEncodedKey() {
 		return encodedKey;
 	}

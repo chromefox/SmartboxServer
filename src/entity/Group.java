@@ -3,6 +3,7 @@ package entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -44,20 +45,33 @@ public class Group implements Serializable {
 	@Expose
 	private String encodedKey;
 	@Persistent(mappedBy = "group")
-	private List<Message> messages = new ArrayList<Message>();
+	@Expose
+	private List<ChatMessage> messages = new ArrayList<ChatMessage>();
 	@NotPersistent
 	@Expose
 	private ArrayList<String> memberNames = new ArrayList<String>();
 
+	public String getUserDevices() {
+		StringBuilder sb = new StringBuilder();
+		Iterator<Key> iter = userSet.iterator();
+		while (iter.hasNext()) {
+			Key key = (Key) iter.next();
+			Users temp = UserDM.retrieveUserWithKey(key);
+			sb.append(temp.getDeviceRegId());
+			if (iter.hasNext()) sb.append(";");
+		}
+		return sb.toString();
+	}
+
 	public void setEncodedKey() {
 		encodedKey = KeyFactory.keyToString(key);
 	}
-	
+
 	public void setMemberName() {
-		//iterate through userset
+		// iterate through userset
 	}
-	
-	public void addMessage(Message message) {
+
+	public void addMessage(ChatMessage message) {
 		messages.add(message);
 	}
 
@@ -69,16 +83,16 @@ public class Group implements Serializable {
 		this.memberNames = memberNames;
 	}
 
-	public List<Message> getMessages() {
+	public List<ChatMessage> getMessages() {
 		return messages;
 	}
 
-	public void setMessages(List<Message> messages) {
+	public void setMessages(List<ChatMessage> messages) {
 		this.messages = messages;
 	}
 
 	public Group() {
-		
+
 	}
 
 	public Group(String groupName, String className, int sectionNumber) {

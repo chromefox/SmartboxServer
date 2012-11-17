@@ -13,7 +13,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
 import entity.Group;
-import entity.Message;
+import entity.ChatMessage;
 import entity.Users;
 
 public enum GroupDM {
@@ -78,11 +78,11 @@ public enum GroupDM {
 		return result;
 	}
 	
-	public static void addMessage(Group group, String msg) {
+	public static void addChatMessage(Group group, String msg) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try {
 			//Add a message into the group
-			Message message = new Message(msg);
+			ChatMessage message = new ChatMessage(msg);
 			group.addMessage(message);
 			pm.makePersistent(group);
 		} catch (Exception e) {
@@ -123,6 +123,20 @@ public enum GroupDM {
 		return group;
 	}
 	
+	public static Group retrieve(Key key) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Group group = null;
+		try {
+			group = (Group) pm.getObjectById(Group.class, key);
+			group.getMessages();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			pm.close();
+		}
+		return group;
+	}
+	 
 	public static void remove(String groupName) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try {
