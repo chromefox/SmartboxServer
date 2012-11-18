@@ -84,6 +84,7 @@ public class Group implements Serializable {
 	}
 
 	public List<ChatMessage> getMessages() {
+		for(ChatMessage msg : messages) msg.getMessage();
 		return messages;
 	}
 

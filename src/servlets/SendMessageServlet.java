@@ -49,6 +49,7 @@ public class SendMessageServlet extends BaseServlet {
 	private static final int MAX_RETRY = 3;
 
 	static final String PARAMETER_DEVICE = "device";
+	static final String PARAMETER_MESSAGE = "message";
 	static final String PARAMETER_MULTICAST = "multicastKey";
 
 	private Sender sender;
@@ -111,7 +112,8 @@ public class SendMessageServlet extends BaseServlet {
 		if (regIds != null) {
 			StringTokenizer token = new StringTokenizer(regIds, ";");
 			while (token.hasMoreTokens()) {
-				sendSingleMessage(token.nextToken(), resp);
+				String devId = token.nextToken();
+				if(!devId.equals("null")) sendSingleMessage(devId, req.getParameter(PARAMETER_MESSAGE), resp);
 			}
 			return;
 		}
@@ -128,13 +130,13 @@ public class SendMessageServlet extends BaseServlet {
 	}
 
 	// Send a single message to a device regId
-	private void sendSingleMessage(String regId, HttpServletResponse resp) {
+	private void sendSingleMessage(String regId, String msg, HttpServletResponse resp) {
 		logger.info("Sending message to device " + regId);
-		Message message = new Message.Builder().build();
-		// TODO: Message is the chat message that the user posted from the
-		// device - sent to all of the group's users than the user.
+		Message message = new Message.Builder().addData("msg",msg).build();
+		// device - send to all of the group's users than the user.
 		Result result;
 		try {
+			
 			result = sender.sendNoRetry(message, regId);
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Exception posting " + message, e);

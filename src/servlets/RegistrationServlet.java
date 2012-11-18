@@ -26,6 +26,11 @@ public class RegistrationServlet extends BaseServlet {
 
 			Gson gson = new GsonBuilder().create();
 			Users users = gson.fromJson(sb.toString(), Users.class);
+			
+			//Clean up the mobile number so that the stored number is standardized
+			//We are only storing the 8 digit numbers without country code becoz we assume you are in Singapore
+			users.setMobileNumber(Util.parseMobileNumber(users.getMobileNumber()));
+			
 			UserDM.createUser(users);
 
 //			HttpSession session = request.getSession(true);

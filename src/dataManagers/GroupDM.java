@@ -66,7 +66,9 @@ public enum GroupDM {
         			if(user.getKey() != tempUser.getKey()) group.getMemberNames().add(tempUser.getName()); 
         		}
         		
+        		try {
         		group.getMessages();
+        		} catch(Exception e) {}
         		group.setEncodedKey();
         		result.add(group);
         	}
@@ -81,13 +83,19 @@ public enum GroupDM {
 	public static void addChatMessage(Group group, String msg) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try {
+			pm.currentTransaction().begin();
 			//Add a message into the group
 			ChatMessage message = new ChatMessage(msg);
 			group.addMessage(message);
 			pm.makePersistent(group);
+			pm.currentTransaction().commit();
 		} catch (Exception e) {
 			logger.severe(e.toString());
+			logger.severe(e.getStackTrace().toString());
 		} finally {
+			 if (pm.currentTransaction().isActive()) {
+			        pm.currentTransaction().rollback();
+			    }
 			pm.close();
 		}
 	}
@@ -113,8 +121,15 @@ public enum GroupDM {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Group group = null;
 		try {
-			group = (Group) pm.getObjectById(Group.class, groupName.toLowerCase());
+			group = (Group) pm.getObjectById(Group.class,
+					groupName.toLowerCase());
 			group.getMessages();
+			group.getUserSet();
+			for (ChatMessage msg : group.getMessages()) {
+				String a = msg.getMessage();
+				int b = 0;
+			
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -122,13 +137,14 @@ public enum GroupDM {
 		}
 		return group;
 	}
-	
+
 	public static Group retrieve(Key key) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Group group = null;
 		try {
 			group = (Group) pm.getObjectById(Group.class, key);
 			group.getMessages();
+			group.getUserSet();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

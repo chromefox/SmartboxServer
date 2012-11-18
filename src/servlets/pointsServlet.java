@@ -3,7 +3,6 @@ package servlets;
 import java.io.IOException;
 import java.util.List;
 
-import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,10 +11,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import dataManagers.GroupDM;
-import dataManagers.PMF;
 import dataManagers.UserDM;
+import entity.ChatMessage;
 import entity.Group;
-import entity.UserEvent;
 import entity.Users;
 
 public class pointsServlet extends BaseServlet {
@@ -34,10 +32,17 @@ public class pointsServlet extends BaseServlet {
 			// Testing creation of many to many relationship, getting the
 			// objects by key and many other things
 			// Get current user
-//			Users user = UserDM.retrieve("t");-
+			Users user = UserDM.retrieve("t");
 			
-//			List<Group> groupList = GroupDM.retrieveUserGroup(user);
-						
+			List<Group> groupList = GroupDM.retrieveUserGroup(user);
+			
+//			for(Group group : groupList) {
+//				for(ChatMessage msg : group.getMessages()) {
+//						String a = msg.getMessage();
+//						int b = 0;
+//					}
+//				}
+			
 //			user.setGroupList((ArrayList<Group>) groupList);
 //			Gson gson = new GsonBuilder()
 //					.excludeFieldsWithoutExposeAnnotation().create();
@@ -47,10 +52,15 @@ public class pointsServlet extends BaseServlet {
 //			Users test = (Users) UserDM.retrieveUserWithKey(key);
 			
 			//Test 2 - create a message for the group
-//			Group test1 = GroupDM.retrieve("is");
-//			GroupDM.addChatMessage(test1, "test1111");
+//			Group test1 = GroupDM.retrieve("test ");
+//			GroupDM.addChatMessage(test1, "final test");
 //			String a = test1.getMessages().get(0).getMessage();
-//			String b = gson.toJson(test1);
+			
+//			for(ChatMessage msg2: test1.getMessages()) {
+//				logger.severe(msg2.getMessage());
+//			}
+//			
+//			String a = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(test1);
 			
 			//Pseudo code for chat messaging
 			//Every time a user create a chat message, it will send the message to the server

@@ -75,11 +75,13 @@ public class SendAllMessagesServlet extends BaseServlet {
 				// only handle
 				// 1000 devices per message
 
-				//Get all the group members' user devices (including the user)
+				// Get all the group members' user devices (including the user)
 				TaskOptions taskOptions = TaskOptions.Builder
 						.withUrl("/send")
 						.param(SendMessageServlet.PARAMETER_DEVICE,
-								group.getUserDevices()).method(Method.POST);
+								group.getUserDevices())
+						.param(SendMessageServlet.PARAMETER_MESSAGE, msg)
+						.method(Method.POST);
 				queue.add(taskOptions);
 
 				// int total = 1;
