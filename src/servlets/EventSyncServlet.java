@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONArray;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import dataManagers.UserDM;
@@ -38,17 +39,17 @@ public class EventSyncServlet extends BaseServlet {
 			List<UserEvent> eventList = new Gson().fromJson(events.toString(), collectionType);
 			//persist all the userevent for the user
 			UserDM.addUserEvent(user, eventList);
-			
-			response.setContentType("text/xml");
-			response.setHeader("Cache-Control", "no-cache");
-			response.getWriter().write(
-					"<message>Test success</message>");
 		} catch (Exception e) {
-			response.setContentType("text/xml");
-			response.setHeader("Cache-Control", "no-cache");
-			response.getWriter().write(
-					"<message>Registeration Unsuccessful!</message>");
 			logger.severe(e.toString());
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+
+			String errorMsg = "Calendar Syncing Failed";
+			Gson responseGson = new Gson();
+			JsonObject obj = new JsonObject();
+			obj.addProperty("error", errorMsg);
+
+			response.getWriter().write(responseGson.toJson(obj));
 		}
 		/*
 		 * String errorMsg=""; request.setAttribute("errorMsg", errorMsg);

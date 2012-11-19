@@ -65,7 +65,7 @@ public class Users implements Serializable {
 	private ArrayList<Group> groupList;
 	@Expose
 	private String encodedKey;
-	@Persistent(mappedBy = "users")
+	@Persistent(mappedBy = "users") 
 	@Expose
 	private List<UserEvent> userEvents = new ArrayList<UserEvent>();
 	

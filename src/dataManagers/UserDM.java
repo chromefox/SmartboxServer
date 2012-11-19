@@ -45,13 +45,18 @@ public enum UserDM {
 	public static void addUserEvent(Users users, List<UserEvent> events) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try {
+			pm.currentTransaction().begin();
 			for(UserEvent ue : events) {
 				users.addUserEvents(ue);
 			}
 			pm.makePersistent(users);
+			pm.currentTransaction().commit();
 		} catch (Exception e) {
 			logger.severe(e.toString());
 		} finally {
+			if (pm.currentTransaction().isActive()) {
+		        pm.currentTransaction().rollback();
+		    }
 			pm.close();
 		}
 	}
@@ -83,7 +88,9 @@ public enum UserDM {
 			if (results.iterator().hasNext()) {
 				for (Users e : results) {
 					user = e;
+					user.getGroupSet();
 					user.setEncodedKey();
+					user.getUserEvents();
 				}
 			}
 		} catch (Exception e) {
@@ -107,6 +114,9 @@ public enum UserDM {
 			if (results.iterator().hasNext()) {
 				for (Users e : results) {
 					user = e;
+					user.getGroupSet();
+					user.setEncodedKey();
+					user.getUserEvents();
 				}
 			}
 		} catch (Exception e) {
@@ -135,6 +145,7 @@ public enum UserDM {
 		try {
 			user = (Users) pm.getObjectById(Users.class, email);
 			user.getGroupSet();	
+			user.getUserEvents();
 			user.setEncodedKey();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -149,6 +160,8 @@ public enum UserDM {
 		Users user = null;
 		try {
 			user = (Users) pm.getObjectById(Users.class, key);
+			user.getGroupSet();
+			user.getUserEvents();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
