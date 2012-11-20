@@ -62,6 +62,16 @@ public class Group implements Serializable {
 		}
 		return sb.toString();
 	}
+	
+	public ArrayList<Users> getUserObjects() {
+		ArrayList<Users> users = new ArrayList<Users>();
+		Iterator<Key> iter = userSet.iterator();
+		while(iter.hasNext()) {
+			Key key = iter.next();
+			users.add(UserDM.retrieveUserWithKey(key));
+		}
+		return users;
+	}
 
 	public void setEncodedKey() {
 		encodedKey = KeyFactory.keyToString(key);
