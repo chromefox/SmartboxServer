@@ -60,6 +60,23 @@ public enum UserDM {
 			pm.close();
 		}
 	}
+	
+	public static void addUserEvent(Users users, UserEvent event) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		try {
+			pm.currentTransaction().begin();
+			users.addUserEvents(event);
+			pm.makePersistent(users);
+			pm.currentTransaction().commit();
+		} catch (Exception e) {
+			logger.severe(e.toString());
+		} finally {
+			if (pm.currentTransaction().isActive()) {
+		        pm.currentTransaction().rollback();
+		    }
+			pm.close();
+		}
+	}
 
 	public static List<Users> retrieveAll() {
 		PersistenceManager pm = PMF.get().getPersistenceManager();

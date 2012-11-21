@@ -81,6 +81,7 @@ public class SendAllMessagesServlet extends BaseServlet {
 						.param(SendMessageServlet.PARAMETER_DEVICE,
 								group.getUserDevices())
 						.param(SendMessageServlet.PARAMETER_MESSAGE, msg)
+						.param(SendMessageServlet.PARAMETER_EVENT_IDENTIFIER, SendMessageServlet.CHAT_MESSAGE_IDENTIFIER)
 						.method(Method.POST);
 				queue.add(taskOptions);
 

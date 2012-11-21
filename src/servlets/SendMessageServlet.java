@@ -47,8 +47,12 @@ public class SendMessageServlet extends BaseServlet {
 	private static final String HEADER_QUEUE_COUNT = "X-AppEngine-TaskRetryCount";
 	private static final String HEADER_QUEUE_NAME = "X-AppEngine-QueueName";
 	private static final int MAX_RETRY = 3;
+	
+	public static final String CHAT_MESSAGE_IDENTIFIER = "0";
+	public static final String EVENT_CREATED_IDENTIFIER = "1";
 
 	static final String PARAMETER_DEVICE = "device";
+	static final String PARAMETER_EVENT_IDENTIFIER = "identifier";
 	static final String PARAMETER_MESSAGE = "message";
 	static final String PARAMETER_MULTICAST = "multicastKey";
 
@@ -113,7 +117,9 @@ public class SendMessageServlet extends BaseServlet {
 			StringTokenizer token = new StringTokenizer(regIds, ";");
 			while (token.hasMoreTokens()) {
 				String devId = token.nextToken();
-				if(!devId.equals("null")) sendSingleMessage(devId, req.getParameter(PARAMETER_MESSAGE), resp);
+				if(!devId.equals("null")){
+					sendSingleMessage(devId, req.getParameter(PARAMETER_MESSAGE), req.getParameter(PARAMETER_EVENT_IDENTIFIER), resp);
+				}
 			}
 			return;
 		}
@@ -130,13 +136,16 @@ public class SendMessageServlet extends BaseServlet {
 	}
 
 	// Send a single message to a device regId
-	private void sendSingleMessage(String regId, String msg, HttpServletResponse resp) {
+	private void sendSingleMessage(String regId, String msg, String identifier, HttpServletResponse resp) {
 		logger.info("Sending message to device " + regId);
-		Message message = new Message.Builder().addData("msg",msg).build();
+		Message message = new Message.Builder().addData("msg",msg)
+				.addData("identifier", identifier)
+				.build();
 		// device - send to all of the group's users than the user.
+		// Result will contain the GCM server responses. 
+		
 		Result result;
 		try {
-			
 			result = sender.sendNoRetry(message, regId);
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Exception posting " + message, e);

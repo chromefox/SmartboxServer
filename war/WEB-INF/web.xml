@@ -149,6 +149,18 @@
     <url-pattern>/addGroup</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+   <servlet-name>addEventServlet</servlet-name>
+    <servlet-class>
+      servlets.addEventServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>addEventServlet</servlet-name>
+    <url-pattern>/addEvent</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
    <servlet-name>getGroupServlet</servlet-name>
     <servlet-class>

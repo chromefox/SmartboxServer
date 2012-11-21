@@ -58,19 +58,45 @@ public class Group implements Serializable {
 			Key key = (Key) iter.next();
 			Users temp = UserDM.retrieveUserWithKey(key);
 			sb.append(temp.getDeviceRegId());
-			if (iter.hasNext()) sb.append(";");
+			if (iter.hasNext())
+				sb.append(";");
 		}
 		return sb.toString();
 	}
-	
+
+	public String getUserDevicesWithoutUser(Key userKey) {
+		StringBuilder sb = new StringBuilder();
+		Iterator<Key> iter = userSet.iterator();
+		while (iter.hasNext()) {
+			Key key = (Key) iter.next();
+			if (userKey == key || userKey.equals(key)) {
+				continue;
+			}
+
+			Users temp = UserDM.retrieveUserWithKey(key);
+			sb.append(temp.getDeviceRegId());
+			if (iter.hasNext())
+				sb.append(";");
+		}
+		return sb.toString();
+	}
+
 	public ArrayList<Users> getUserObjects() {
 		ArrayList<Users> users = new ArrayList<Users>();
 		Iterator<Key> iter = userSet.iterator();
-		while(iter.hasNext()) {
+		while (iter.hasNext()) {
 			Key key = iter.next();
 			users.add(UserDM.retrieveUserWithKey(key));
 		}
 		return users;
+	}
+
+	public void addUserEventToAllUsers(UserEvent event) {
+		Iterator<Key> iter = userSet.iterator();
+		while (iter.hasNext()) {
+			Key key = iter.next();
+			UserDM.addUserEvent(UserDM.retrieveUserWithKey(key), event);
+		}
 	}
 
 	public void setEncodedKey() {
@@ -94,7 +120,7 @@ public class Group implements Serializable {
 	}
 
 	public List<ChatMessage> getMessages() {
-		for(ChatMessage msg : messages) msg.getMessage();
+		for (ChatMessage msg : messages) msg.getMessage();
 		return messages;
 	}
 
