@@ -24,6 +24,8 @@ import entity.UserEvent;
 import entity.Users;
 
 public class FindSlotServlet extends BaseServlet {
+	private static final String DATE_FORMAT = "E, d MMM YYYY, HH:mm";
+	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -37,7 +39,7 @@ public class FindSlotServlet extends BaseServlet {
 			int duration = obj.getInt("duration");
 			long endDateMil = obj.getLong("endDate");
 			long startDateMil = obj.getLong("startDate");
-			DateTime endDate = new DateTime(new Date(endDateMil));
+			DateTime endDate = (new DateTime(new Date(endDateMil))).plusDays(1);
 			DateTime beginDate = new DateTime(new Date(startDateMil));
 			Group group = GroupDM.retrieve(KeyFactory.stringToKey(groupKey));
 			//Comparison logic
@@ -59,10 +61,12 @@ public class FindSlotServlet extends BaseServlet {
 			int availableCount = 0;
 			DateTime eventStart;
 			DateTime eventEnd;
+			
+			
+			
 			while(!beginDate.isEqual(endDate) && !beginDate.isAfter(endDate)) {
 				availableCount = users.size();
 				beginPlusDuration = beginDate.plusHours(duration);
-				
 				for (Users user : users) {
 					for(UserEvent event : user.getUserEvents()) {
 						eventStart = new DateTime(event.getStartDate());
@@ -87,18 +91,36 @@ public class FindSlotServlet extends BaseServlet {
 							availableCount--;
 							break; //break out of the userevent
 						}
+						
 						//Case 4: Event is in between, case 2, start after meeting time
 						else if(beginPlusDuration.isAfter(eventStart) && beginPlusDuration.isBefore(eventEnd)) {
 							//not available
 							availableCount--;
 							break;
 						}
+						//Case 5: is equal
+						else if(beginDate.equals(eventStart)) {
+							availableCount--;
+							break;
+						}					
+						//Case 6: Overfill
+						else if(beginDate.isAfter(eventStart) && beginPlusDuration.isBefore(eventEnd)) {
+							availableCount--;
+							break;
+						}
+						//Case 7: Smaller
+						else if(beginDate.isBefore(eventStart) && beginPlusDuration.isAfter(eventEnd)) {
+							availableCount--;
+							break;
+						}
 					}
 				}
 				
-				DateTimeFormatter fmt = DateTimeFormat.forPattern("E, d MMM, H:m");
+				DateTimeFormatter fmt = DateTimeFormat.forPattern(DATE_FORMAT);
+				
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("date", fmt.print(beginDate));
+				jsonObj.put("endDate", fmt.print(beginPlusDuration));
 				jsonObj.put("availableCount", availableCount);
 				//Store the beginDate and the corresponding available count
 				respArray.put(jsonObj);
