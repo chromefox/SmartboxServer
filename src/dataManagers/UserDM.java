@@ -1,5 +1,6 @@
 package dataManagers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 import entity.ChatMessage;
 import entity.Group;
+import entity.Meeting;
 import entity.UserEvent;
 import entity.Users;
 
@@ -42,14 +44,39 @@ public enum UserDM {
 		}
 	}
 	
+	public static void deleteAllUserEvents(Users user) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		try {
+			pm.currentTransaction().begin();
+			for(UserEvent event : user.getUserEvents()) {
+				pm.deletePersistent(pm.getObjectById(event.getClass(), event.getKey())); 
+			}
+			
+			user.setUserEvents(new ArrayList<UserEvent>());
+			
+			pm.makePersistent(user);
+			pm.currentTransaction().commit();
+		} catch (Exception e) {
+			logger.severe(e.toString());
+			logger.severe(e.getStackTrace().toString());
+		} finally {
+			 if (pm.currentTransaction().isActive()) {
+			        pm.currentTransaction().rollback();
+			    }
+			pm.close();
+		}
+	}
+	
 	public static void addUserEvent(Users users, List<UserEvent> events) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try {
 			pm.currentTransaction().begin();
+			//Refetch objects so that object manager is the same
+			Users temp = pm.getObjectById(Users.class, users.getKey());
 			for(UserEvent ue : events) {
-				users.addUserEvents(ue);
+				temp.addUserEvents(ue);
 			}
-			pm.makePersistent(users);
+			pm.makePersistent(temp);
 			pm.currentTransaction().commit();
 		} catch (Exception e) {
 			logger.severe(e.toString());
@@ -67,6 +94,26 @@ public enum UserDM {
 			pm.currentTransaction().begin();
 			users.addUserEvents(event);
 			pm.makePersistent(users);
+			pm.currentTransaction().commit();
+		} catch (Exception e) {
+			logger.severe(e.toString());
+		} finally {
+			if (pm.currentTransaction().isActive()) {
+		        pm.currentTransaction().rollback();
+		    }
+			pm.close();
+		}
+	}
+	
+	public static void addUserEvent(Key userKey, UserEvent event) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		try {
+			pm.currentTransaction().begin();
+			Users user = (Users) pm.getObjectById(Users.class, userKey);
+			user.getGroupSet();
+			user.getUserEvents();
+			user.addUserEvents(event);
+			pm.makePersistent(user);
 			pm.currentTransaction().commit();
 		} catch (Exception e) {
 			logger.severe(e.toString());

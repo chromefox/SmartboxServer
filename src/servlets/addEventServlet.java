@@ -34,11 +34,19 @@ public class addEventServlet extends BaseServlet {
 			String userEventJSON = obj.getJSONObject("event").toString();
 			String userKey = obj.getString("userKey");
 			String groupKey = obj.getString("groupKey");
+			
+			double latitude = obj.getDouble("latitude");
+			double longitude = obj.getDouble("longitude");
+			String location = obj.getString("location");
+			
 			Gson gson = new GsonBuilder().create();
 			UserEvent userEvent = gson.fromJson(userEventJSON, UserEvent.class);
 			//Add the event to the users in the group
 			Group group = GroupDM.retrieve(KeyFactory.stringToKey(groupKey));
 			group.addUserEventToAllUsers(userEvent);
+			
+			//Add the meeting object
+			GroupDM.addMeeting(group, userEvent, latitude, longitude, location);
 			
 			Queue queue = QueueFactory.getQueue("gcm");
 			// Get all the group members' user devices (excluding the user)

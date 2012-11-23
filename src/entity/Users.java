@@ -68,6 +68,12 @@ public class Users implements Serializable {
 	@Persistent(mappedBy = "users") 
 	@Expose
 	private List<UserEvent> userEvents = new ArrayList<UserEvent>();
+	@Persistent
+	@Expose
+	private double latitude;
+	@Persistent
+	@Expose
+	private double longitude;
 	
 	public List<UserEvent> getUserEvents() {
 		return userEvents;
@@ -95,6 +101,22 @@ public class Users implements Serializable {
 
 	public void setGroupList(ArrayList<Group> groupList) {
 		this.groupList = groupList;
+	}
+	
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 
 	public Users(String username, String password, String name, String dob,

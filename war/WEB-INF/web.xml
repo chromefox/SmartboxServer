@@ -161,6 +161,31 @@
     <url-pattern>/addEvent</url-pattern>
   </servlet-mapping>
   
+     <servlet>
+   <servlet-name>addLocationServlet</servlet-name>
+    <servlet-class>
+      servlets.addLocationServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>addLocationServlet</servlet-name>
+    <url-pattern>/addLocation</url-pattern>
+  </servlet-mapping>
+  
+      <servlet>
+   <servlet-name>requestLocationServlet</servlet-name>
+    <servlet-class>
+      servlets.requestLocationServlet
+    </servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>requestLocationServlet</servlet-name>
+    <url-pattern>/requestLocation</url-pattern>
+  </servlet-mapping>
+  
+  
   <servlet>
    <servlet-name>getGroupServlet</servlet-name>
     <servlet-class>

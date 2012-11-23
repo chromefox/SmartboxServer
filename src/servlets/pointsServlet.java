@@ -1,23 +1,28 @@
 package servlets;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Calendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dataManagers.GroupDM;
-import dataManagers.UserDM;
-import entity.Group;
-import entity.Users;
+import com.google.appengine.labs.repackaged.org.json.JSONArray;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
+import com.google.appengine.labs.repackaged.org.json.JSONTokener;
 
 public class pointsServlet extends BaseServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException	, IOException {
 		try {
+			
+			String duration=GetDistance("1.29686","103.85220","1.30495","103.83249");
 			//Try creating a user here
 //			Users users = new Users("test", "t", "t", "84827483");
 //			UserDM.createUser(users);
@@ -29,9 +34,6 @@ public class pointsServlet extends BaseServlet {
 			// Testing creation of many to many relationship, getting the
 			// objects by key and many other things
 			// Get current user
-			Users user = UserDM.retrieve("t");
-			
-			List<Group> groupList = GroupDM.retrieveUserGroup(user);
 			
 //			for(Group group : groupList) {
 //				for(ChatMessage msg : group.getMessages()) {
@@ -70,7 +72,7 @@ public class pointsServlet extends BaseServlet {
 			response.setContentType("text/xml");
 			response.setHeader("Cache-Control", "no-cache");
 			response.getWriter().write(
-					"<message>Test success</message>");
+					"<message>" + duration + "</message>");
 		} catch (Exception e) {
 			response.setContentType("text/xml");
 			response.setHeader("Cache-Control", "no-cache");
@@ -83,5 +85,75 @@ public class pointsServlet extends BaseServlet {
 		 * dispatcher = request.getRequestDispatcher("index.jsp");
 		 * dispatcher.forward(request, response);
 		 */
+	}
+	
+	private String GetDistance(String srcLat,String srcLong, String destLat, String destLong) {
+		Calendar c = Calendar.getInstance(); 
+		int seconds = (int) (c.getTimeInMillis()/1000);
+	    StringBuilder urlString = new StringBuilder();
+	    urlString.append("http://maps.googleapis.com/maps/api/directions/json?");
+	    urlString.append("origin=");//from
+	    urlString.append( srcLat);
+	    urlString.append(",");
+	    urlString.append(srcLong);
+	    urlString.append("&destination=");//to
+	    urlString.append( destLat);
+	    urlString.append(",");
+	    urlString.append( destLong);
+	    urlString.append("&departure_time=");
+	    urlString.append( Integer.toString(seconds));
+	    urlString.append("&mode=transit&sensor=true");
+	//    Log.d("xxx","URL="+urlString.toString());
+
+	    // get the JSON And parse it to get the directions data.
+	    HttpURLConnection urlConnection= null;
+	    URL url = null;
+	    try{
+		    url = new URL(urlString.toString());
+		    urlConnection=(HttpURLConnection)url.openConnection();
+		    urlConnection.setRequestMethod("GET");
+		    urlConnection.setDoOutput(true);
+		    urlConnection.setDoInput(true);
+		    urlConnection.connect();
+	
+		    InputStream inStream = urlConnection.getInputStream();
+		    BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
+	
+		    String temp, response = "";
+		    while((temp = bReader.readLine()) != null){
+		        //Parse data
+		        response += temp;
+		    }
+		    //Close the reader, stream & connection
+		    bReader.close();
+		    inStream.close();
+		    urlConnection.disconnect();
+	
+		    //Sortout JSONresponse 
+		    JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+		    JSONArray array = object.getJSONArray("routes");
+		        //Log.d("JSON","array: "+array.toString());
+	
+		    //Routes is a combination of objects and arrays
+		    JSONObject routes = array.getJSONObject(0);
+		        //Log.d("JSON","routes: "+routes.toString());
+	
+	
+		    JSONArray legs = routes.getJSONArray("legs");
+		        //Log.d("JSON","legs: "+legs.toString());
+	
+		    JSONObject steps = legs.getJSONObject(0);
+		            //Log.d("JSON","steps: "+steps.toString());
+	
+		    JSONObject distance = legs.getJSONObject(0);
+		        //Log.d("JSON","distance: "+distance.toString());
+		    JSONObject time = distance.getJSONObject("duration");
+
+			String sDuration = time.getString("text");
+			return sDuration;
+	    }catch(Exception e){
+	    	
+	    }
+	    return null;
 	}
 }

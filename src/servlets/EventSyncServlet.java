@@ -37,6 +37,9 @@ public class EventSyncServlet extends BaseServlet {
 			Users user = UserDM.retrieveUserWithKey(KeyFactory.stringToKey(userKey));
 			Type collectionType = new TypeToken<ArrayList<UserEvent>>() {}.getType();
 			List<UserEvent> eventList = new Gson().fromJson(events.toString(), collectionType);
+			
+			//delete all userEvents for the user first
+			UserDM.deleteAllUserEvents(user);
 			//persist all the userevent for the user
 			UserDM.addUserEvent(user, eventList);
 		} catch (Exception e) {

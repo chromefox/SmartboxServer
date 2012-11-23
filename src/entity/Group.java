@@ -47,9 +47,42 @@ public class Group implements Serializable {
 	@Persistent(mappedBy = "group")
 	@Expose
 	private List<ChatMessage> messages = new ArrayList<ChatMessage>();
+	@Persistent
+	@Expose
+	private Meeting meeting;
+	@Persistent
+	@Expose
+	private ArrayList<String> userDistances = new ArrayList<String>();
 	@NotPersistent
 	@Expose
 	private ArrayList<String> memberNames = new ArrayList<String>();
+	@NotPersistent
+	@Expose
+	private ArrayList<String> members = new ArrayList<String>();
+	
+	public ArrayList<String> getUserDistances() {
+		return userDistances;
+	}
+
+	public void setUserDistances(ArrayList<String> userDistances) {
+		this.userDistances = userDistances;
+	}
+
+	public ArrayList<String> getMembers() {
+		return members;
+	}
+
+	public void setMembers(ArrayList<String> members) {
+		this.members = members;
+	}
+
+	public Meeting getMeeting() {
+		return meeting;
+	}
+
+	public void setMeeting(Meeting meeting) {
+		this.meeting = meeting;
+	}
 
 	public String getUserDevices() {
 		StringBuilder sb = new StringBuilder();
@@ -94,8 +127,10 @@ public class Group implements Serializable {
 	public void addUserEventToAllUsers(UserEvent event) {
 		Iterator<Key> iter = userSet.iterator();
 		while (iter.hasNext()) {
+			//Need to recreate the userevent due to JDO relationship limitation
+			UserEvent save = new UserEvent(event);
 			Key key = iter.next();
-			UserDM.addUserEvent(UserDM.retrieveUserWithKey(key), event);
+			UserDM.addUserEvent(key, save);
 		}
 	}
 

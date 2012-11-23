@@ -33,6 +33,12 @@ public class UserEvent implements Serializable {
 		
 	}
 	
+	public UserEvent(UserEvent event) {
+		this.details = event.getDetails();
+		this.startDate = event.getStartDate();
+		this.endDate = event.getEndDate();
+	}
+	
 	public Key getKey() {
 		return key;
 	}

@@ -36,11 +36,17 @@ public class addGroupServlet extends BaseServlet {
 				group.addUser(userTemp);
 			}
 			
-			GroupDM.persist(group);
+			GroupDM.persistNewGroup(group);
 			
-			response.setContentType("application/json");
-			response.setHeader("Cache-Control", "no-cache");
 			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+
+			gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+					.create();
+			
+			String a = gson.toJson(group).toString();
+			response.getWriter().write(gson.toJson(group));
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.toString());
 			logger.log(Level.SEVERE, e.getStackTrace().toString());

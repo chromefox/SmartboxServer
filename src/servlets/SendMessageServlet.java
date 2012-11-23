@@ -50,6 +50,7 @@ public class SendMessageServlet extends BaseServlet {
 	
 	public static final String CHAT_MESSAGE_IDENTIFIER = "0";
 	public static final String EVENT_CREATED_IDENTIFIER = "1";
+	public static final String LOCATION_REQUEST_IDENTIFIER = "2";
 
 	static final String PARAMETER_DEVICE = "device";
 	static final String PARAMETER_EVENT_IDENTIFIER = "identifier";

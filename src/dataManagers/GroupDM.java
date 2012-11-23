@@ -12,8 +12,10 @@ import javax.jdo.Query;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
-import entity.Group;
 import entity.ChatMessage;
+import entity.Group;
+import entity.Meeting;
+import entity.UserEvent;
 import entity.Users;
 
 public enum GroupDM {
@@ -43,6 +45,28 @@ public enum GroupDM {
 	public static void persist(Group group) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try {
+			pm.currentTransaction().begin();
+			pm.makePersistent(group);
+			pm.currentTransaction().commit();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.toString());
+		} finally {
+			 if (pm.currentTransaction().isActive()) {
+			        pm.currentTransaction().rollback();
+			    }
+			pm.close();
+		}
+	}
+	
+	public static void persistNewGroup(Group group) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		try {
+			//add empty string array of size user set
+			ArrayList<String> userDistances = new ArrayList<String>();
+			for (int i = 0; i < group.getUserSet().size(); i++) {
+				userDistances.add("");
+			}
+			group.setUserDistances(userDistances);
 			pm.makePersistent(group);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.toString());
@@ -63,11 +87,14 @@ public enum GroupDM {
         		Iterator userIter = group.getUserSet().iterator();
         		while(userIter.hasNext()) {
         			Users tempUser = (Users) pm.getObjectById(Users.class, userIter.next());
-        			if(user.getKey() != tempUser.getKey()) group.getMemberNames().add(tempUser.getName()); 
+        			if(user.getKey() != tempUser.getKey()) group.getMemberNames().add(tempUser.getName());
+        			group.getMembers().add((tempUser.getName()));
         		}
         		
         		try {
+        		group.getUserDistances();
         		group.getMessages();
+        		group.getMeeting();
         		} catch(Exception e) {}
         		group.setEncodedKey();
         		result.add(group);
@@ -100,6 +127,36 @@ public enum GroupDM {
 		}
 	}
 	
+	public static void addMeeting(Group group, UserEvent event, double latitude, double longitude, String location) {
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		try {
+			pm.currentTransaction().begin();
+			// Add a meeting into the group
+			Meeting meeting = Meeting.instantiate(event);
+			//set lat and long and loc
+			meeting.setLatitude(latitude);
+			meeting.setLongitude(longitude);
+			meeting.setLocation(location);
+			
+			// Delete meeting first so that the object does not accumulate in the datastore
+			if(group.getMeeting() != null) {
+				Meeting meeting1 = group.getMeeting();
+				pm.deletePersistent(pm.getObjectById(meeting1.getClass(), meeting1.getKey())); 
+			}
+			
+			group.setMeeting(meeting);
+			pm.makePersistent(group);
+			pm.currentTransaction().commit();
+		} catch (Exception e) {
+			logger.severe(e.toString());
+			logger.severe(e.getStackTrace().toString());
+		} finally {
+			 if (pm.currentTransaction().isActive()) {
+			        pm.currentTransaction().rollback();
+			    }
+			pm.close();
+		}
+	}
 
 	public static List<Group> retrieveAll() {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -124,7 +181,9 @@ public enum GroupDM {
 			group = (Group) pm.getObjectById(Group.class,
 					groupName.toLowerCase());
 			group.getMessages();
+			group.getMeeting();
 			group.getUserSet();
+			group.getUserDistances();
 			for (ChatMessage msg : group.getMessages()) {
 				String a = msg.getMessage();
 				int b = 0;
@@ -143,7 +202,9 @@ public enum GroupDM {
 		Group group = null;
 		try {
 			group = (Group) pm.getObjectById(Group.class, key);
+			group.getMeeting();
 			group.getMessages();
+			group.getUserDistances();
 			group.getUserSet();
 		} catch (Exception e) {
 			e.printStackTrace();
